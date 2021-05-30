@@ -1,7 +1,6 @@
-import 'package:first_project/answer.dart';
+import 'package:first_project/quiz.dart';
+import 'package:first_project/result.dart';
 import 'package:flutter/material.dart';
-
-import 'package:first_project/question.dart';
 
 void main() {
   runApp(MyAwesomeApp());
@@ -18,21 +17,45 @@ class _MyAwesomeAppState extends State<MyAwesomeApp> {
   var questions = [
     {
       'questionText': '¿Cual es tu color favorito?',
-      'answers': ['Rojo', 'Azul', 'Verde', 'Amarillo'],
+      'answers': [
+        {'text': 'Rojo', 'score': 10},
+        {'text': 'Azul', 'score': 6},
+        {'text': 'Verde', 'score': 4},
+        {'text': 'Amarillo', 'score': 1},
+      ],
     },
     {
       'questionText': '¿Cual es tu animal favorito?',
-      'answers': ['Perro', 'Gato', 'Tortuga', 'Conejo'],
+      'answers': [
+        {'text': 'Perro', 'score': 10},
+        {'text': 'Gato', 'score': 6},
+        {'text': 'Tortuga', 'score': 4},
+        {'text': 'Serpiente', 'score': 1},
+      ],
     },
     {
       'questionText': '¿Cual es tu tipo de música favorita?',
-      'answers': ['Rock', 'Pop', 'Electrónica', 'Gótica'],
+      'answers': [
+        {'text': 'Rock', 'score': 10},
+        {'text': 'Pop', 'score': 6},
+        {'text': 'Electronica', 'score': 4},
+        {'text': 'Gotica', 'score': 1},
+      ],
     },
   ];
   var _counter = 0;
-  void _answerQuestion() {
+  var scoreSum = 0;
+  void _answerQuestion(int score) {
     setState(() {
+      scoreSum += score;
       _counter++;
+    });
+  }
+
+  void resetQuiz() {
+    setState(() {
+      this._counter = 0;
+      this.scoreSum = 0;
     });
   }
 
@@ -43,16 +66,9 @@ class _MyAwesomeAppState extends State<MyAwesomeApp> {
         appBar: AppBar(
           title: Text("Test de personalidad"),
         ),
-        body: Column(
-          children: [
-            Question(questionText: questions[_counter]['questionText']),
-            ...(questions[_counter]['answers'] as Iterable<String>)
-                .map((answer) {
-              return Answer(answer, _answerQuestion);
-            }),
-            Text("counter:" + _counter.toString()),
-          ],
-        ),
+        body: questions.length == _counter
+            ? Result(scoreSum, resetQuiz)
+            : Quiz(questions, _counter, _answerQuestion),
       ),
     );
   }
